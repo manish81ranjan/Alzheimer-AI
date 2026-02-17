@@ -1,0 +1,44 @@
+# ===============================
+# Core Web Framework
+# ===============================
+Flask==3.1.2
+Werkzeug==3.1.3
+flask-cors==4.0.0
+
+# ===============================
+# Authentication & Security
+# ===============================
+flask-jwt-extended==4.6.0
+flask-bcrypt==1.0.1
+python-dotenv==1.0.1
+
+# ===============================
+# Database (MongoDB)
+# ===============================
+flask-pymongo==2.3.0
+pymongo==4.7.2
+dnspython==2.6.1
+
+# ===============================
+# Server (Production)
+# ===============================
+gunicorn==21.2.0
+
+# ===============================
+# Image Utilities (used now)
+# ===============================
+Pillow==10.4.0
+
+# ===============================
+# AI / ML (OPTIONAL – safe)
+# Install later only if needed
+# ===============================
+numpy==1.26.4
+opencv-python==4.9.0.80
+# tensorflow>=2.16.1   # uncomment ONLY when real inference is added
+
+# ===============================
+# Reports / PDF
+# ===============================
+fpdf==1.7.2
+protobuf==4.25.3
