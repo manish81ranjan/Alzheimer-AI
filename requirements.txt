@@ -25,17 +25,15 @@ dnspython==2.6.1
 gunicorn==21.2.0
 
 # ===============================
-# Image Utilities (used now)
+# Image / Array Processing
 # ===============================
 Pillow==10.4.0
+numpy==1.26.4
 
 # ===============================
-# AI / ML (OPTIONAL – safe)
-# Install later only if needed
+# AI / ML
 # ===============================
-numpy==1.26.4
-opencv-python==4.9.0.80
-# tensorflow>=2.16.1   # uncomment ONLY when real inference is added
+tensorflow==2.16.1
 
 # ===============================
 # Reports / PDF
