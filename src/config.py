@@ -105,7 +105,6 @@
 
 #         if not os.getenv("JWT_SECRET_KEY"):
 #             raise RuntimeError("Missing required ENV: JWT_SECRET_KEY")
-
 import os
 from datetime import timedelta
 from pathlib import Path
@@ -182,11 +181,11 @@ class Config:
     ) * 1024 * 1024
 
     # =========================
-    # AI / ML (FINAL FIX)
+    # AI / ML
     # =========================
     MODEL_PATH = os.getenv(
         "MODEL_PATH",
-        str((ROOT_DIR / "best_demnet_model (1).keras").resolve()),
+        str((ROOT_DIR / "best_demnet_model (1).keras").resolve())
     )
 
     IMG_SIZE = int(os.getenv("IMG_SIZE", "128"))
