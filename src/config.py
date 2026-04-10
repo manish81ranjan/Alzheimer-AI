@@ -173,26 +173,17 @@ class Config:
     # -------------------- AI / ML --------------------
 
     # ✅ FIXED: proper indentation + correct path handling
-    MODEL_PATH = os.getenv(
-        "MODEL_PATH",
-        str((ROOT_DIR / "ml" / "artifacts" / "best_demnet_model (1).keras").resolve()),
-    )
+   # -------------------- AI / ML --------------------
 
-    # Optional (keep if needed later)
-    # CLASS_MAP_PATH = os.getenv(
-    #     "CLASS_MAP_PATH",
-    #     str((ROOT_DIR / "ml" / "artifacts" / "class_map.json").resolve()),
-    # )
+MODEL_PATH = os.getenv(
+    "MODEL_PATH",
+    str((ROOT_DIR / "best_demnet_model (1).keras").resolve()),
+)
 
-    # METRICS_PATH = os.getenv(
-    #     "METRICS_PATH",
-    #     str((ROOT_DIR / "ml" / "artifacts" / "metrics.json").resolve()),
-    # )
+IMG_SIZE = int(os.getenv("IMG_SIZE", "128"))
 
-    IMG_SIZE = int(os.getenv("IMG_SIZE", "128"))
-
-    MODEL_NAME = os.getenv("MODEL_NAME", "DEMNET-Lite")
-    MODEL_VERSION = os.getenv("MODEL_VERSION", "v1.0")
+MODEL_NAME = os.getenv("MODEL_NAME", "DEMNET-Lite")
+MODEL_VERSION = os.getenv("MODEL_VERSION", "v1.0")
 
     # -------------------- Gemini --------------------
     GEMINI_API_KEY = (os.getenv("GEMINI_API_KEY") or "").strip()
