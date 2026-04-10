@@ -45,20 +45,31 @@
 #         raise RuntimeError("Failed to update scan prediction")
 
 #     return pred
-
-# backend/src/services/inference_service.py
-
 import numpy as np
 from PIL import Image
-from tensorflow.keras.models import load_model
 
 from src.config import Config
 from src.models.scan_model import get_scan_by_id, update_scan_prediction
 
-# Load model once
-MODEL = load_model(Config.MODEL_PATH)
+# Lazy load model (VERY IMPORTANT)
+MODEL = None
 
 CLASS_NAMES = ["ND", "VMD", "MID", "MOD"]
+
+
+def get_model():
+    global MODEL
+
+    if MODEL is None:
+        try:
+            from tensorflow.keras.models import load_model
+            MODEL = load_model(Config.MODEL_PATH)
+            print("✅ Model loaded successfully")
+        except Exception as e:
+            print("❌ Model load failed:", str(e))
+            raise RuntimeError("Model not available")
+
+    return MODEL
 
 
 def preprocess_image(path):
@@ -83,8 +94,11 @@ def run_inference_for_scan(user_id, scan_id):
     # preprocess
     x = preprocess_image(file_path)
 
+    # load model (lazy)
+    model = get_model()
+
     # predict
-    preds = MODEL.predict(x)[0]
+    preds = model.predict(x)[0]
     idx = int(np.argmax(preds))
 
     result = {
