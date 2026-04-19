@@ -105,6 +105,8 @@
 
 #         if not os.getenv("JWT_SECRET_KEY"):
 #             raise RuntimeError("Missing required ENV: JWT_SECRET_KEY")
+
+
 import os
 from datetime import timedelta
 from pathlib import Path
@@ -118,7 +120,7 @@ except Exception:
 
 class Config:
     """
-    Clean production-safe config (Render + Local)
+    Clean production-safe config
     """
 
     # =========================
@@ -140,8 +142,14 @@ class Config:
     HEATMAP_DIR = STATIC_DIR / "heatmaps"
     REPORT_DIR = STATIC_DIR / "reports"
 
-    for p in [STATIC_DIR, UPLOAD_DIR, PROCESSED_DIR, HEATMAP_DIR, REPORT_DIR]:
-        p.mkdir(parents=True, exist_ok=True)
+    for folder in [
+        STATIC_DIR,
+        UPLOAD_DIR,
+        PROCESSED_DIR,
+        HEATMAP_DIR,
+        REPORT_DIR
+    ]:
+        folder.mkdir(parents=True, exist_ok=True)
 
     # =========================
     # DATABASE
@@ -154,7 +162,10 @@ class Config:
     # =========================
     # JWT
     # =========================
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-secret")
+    JWT_SECRET_KEY = os.getenv(
+        "JWT_SECRET_KEY",
+        "dev-secret"
+    )
 
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
         hours=int(os.getenv("JWT_EXPIRES_HOURS", "24"))
@@ -181,7 +192,7 @@ class Config:
     ) * 1024 * 1024
 
     # =========================
-    # AI / ML
+    # MODEL
     # =========================
     MODEL_PATH = os.getenv(
         "MODEL_PATH",
@@ -190,13 +201,23 @@ class Config:
 
     IMG_SIZE = int(os.getenv("IMG_SIZE", "128"))
 
-    MODEL_NAME = os.getenv("MODEL_NAME", "DEMNET-Lite")
-    MODEL_VERSION = os.getenv("MODEL_VERSION", "v1.0")
+    MODEL_NAME = os.getenv(
+        "MODEL_NAME",
+        "DEMNET-Lite"
+    )
+
+    MODEL_VERSION = os.getenv(
+        "MODEL_VERSION",
+        "v1.0"
+    )
 
     # =========================
     # GEMINI
     # =========================
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+    GEMINI_API_KEY = os.getenv(
+        "GEMINI_API_KEY",
+        ""
+    ).strip()
 
     GEMINI_MODEL = os.getenv(
         "GEMINI_MODEL",
@@ -204,7 +225,7 @@ class Config:
     )
 
     # =========================
-    # PRODUCTION CHECKS
+    # PRODUCTION CHECK
     # =========================
     if ENV == "production":
         if not os.getenv("MONGO_URI"):
