@@ -236,6 +236,148 @@
 
 # src/config.py
 
+# import os
+# from datetime import timedelta
+# from pathlib import Path
+
+# try:
+#     from dotenv import load_dotenv
+#     load_dotenv()
+# except Exception:
+#     pass
+
+
+# class Config:
+#     """
+#     FINAL FIXED CONFIG
+#     Render + Local compatible
+#     """
+
+#     # ===============================
+#     # CORE
+#     # ===============================
+#     ENV = os.getenv("FLASK_ENV", "development")
+#     DEBUG = ENV == "development"
+
+#     # ===============================
+#     # ROOT PATHS
+#     # ===============================
+#     # current file = /opt/render/project/src/src/config.py
+#     # parent[1] = /opt/render/project/src
+#     BASE_DIR = Path(__file__).resolve().parents[1]
+
+#     # repo root
+#     ROOT_DIR = BASE_DIR
+
+#     # ===============================
+#     # STATIC FOLDERS
+#     # ===============================
+#     STATIC_DIR = ROOT_DIR / "src" / "static"
+
+#     UPLOAD_DIR = STATIC_DIR / "uploads"
+#     PROCESSED_DIR = STATIC_DIR / "processed"
+#     HEATMAP_DIR = STATIC_DIR / "heatmaps"
+#     REPORT_DIR = STATIC_DIR / "reports"
+
+#     for folder in [
+#         STATIC_DIR,
+#         UPLOAD_DIR,
+#         PROCESSED_DIR,
+#         HEATMAP_DIR,
+#         REPORT_DIR
+#     ]:
+#         folder.mkdir(parents=True, exist_ok=True)
+
+#     # ===============================
+#     # DATABASE
+#     # ===============================
+#     MONGO_URI = os.getenv(
+#         "MONGO_URI",
+#         "mongodb://127.0.0.1:27017/alzheimer_ai"
+#     )
+
+#     # ===============================
+#     # JWT
+#     # ===============================
+#     JWT_SECRET_KEY = os.getenv(
+#         "JWT_SECRET_KEY",
+#         "super-secret-key-change-this-32chars"
+#     )
+
+#     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
+#         hours=int(os.getenv("JWT_EXPIRES_HOURS", "24"))
+#     )
+
+#     # ===============================
+#     # CORS
+#     # ===============================
+#     _cors = os.getenv(
+#         "CORS_ORIGINS",
+#         "http://localhost:5173,http://127.0.0.1:5173,https://alzheimer-ai-system-frontend-4zcj.vercel.app"
+#     ).strip()
+
+#     if _cors in ["*", "all"]:
+#         CORS_ORIGINS = "*"
+#     else:
+#         CORS_ORIGINS = [x.strip() for x in _cors.split(",")]
+
+#     # ===============================
+#     # FILE SIZE
+#     # ===============================
+#     MAX_CONTENT_LENGTH = int(
+#         os.getenv("MAX_CONTENT_LENGTH_MB", "25")
+#     ) * 1024 * 1024
+
+#     # ===============================
+#     # MODEL PATH (FINAL FIX)
+#     # ===============================
+#     MODEL_PATH = os.getenv(
+#         "MODEL_PATH",
+#         str((ROOT_DIR / "best_demnet_model (1).keras").resolve())
+#     )
+
+#     IMG_SIZE = int(os.getenv("IMG_SIZE", "128"))
+
+#     MODEL_NAME = os.getenv(
+#         "MODEL_NAME",
+#         "DEMNET-Lite"
+#     )
+
+#     MODEL_VERSION = os.getenv(
+#         "MODEL_VERSION",
+#         "v1.0"
+#     )
+
+#     # ===============================
+#     # GEMINI
+#     # ===============================
+#     GEMINI_API_KEY = os.getenv(
+#         "GEMINI_API_KEY",
+#         ""
+#     ).strip()
+
+#     GEMINI_MODEL = os.getenv(
+#         "GEMINI_MODEL",
+#         "gemini-1.5-flash"
+#     )
+
+#     # ===============================
+#     # PRODUCTION CHECK
+#     # ===============================
+#     if ENV == "production":
+#         if not os.getenv("MONGO_URI"):
+#             raise RuntimeError("Missing MONGO_URI")
+
+#         if not os.getenv("JWT_SECRET_KEY"):
+#             raise RuntimeError("Missing JWT_SECRET_KEY")
+
+
+
+# ============================================
+# FILE 1: src/config.py
+# FINAL FIXED (Render + Local + Clean Paths)
+# ============================================
+
 import os
 from datetime import timedelta
 from pathlib import Path
@@ -248,30 +390,23 @@ except Exception:
 
 
 class Config:
-    """
-    FINAL FIXED CONFIG
-    Render + Local compatible
-    """
-
-    # ===============================
-    # CORE
-    # ===============================
+    # =========================================
+    # ENV
+    # =========================================
     ENV = os.getenv("FLASK_ENV", "development")
     DEBUG = ENV == "development"
 
-    # ===============================
-    # ROOT PATHS
-    # ===============================
-    # current file = /opt/render/project/src/src/config.py
-    # parent[1] = /opt/render/project/src
-    BASE_DIR = Path(__file__).resolve().parents[1]
+    # =========================================
+    # PATHS
+    # config.py => src/config.py
+    # project root => parent[1]
+    # =========================================
+    BASE_DIR = Path(__file__).resolve().parent
+    ROOT_DIR = BASE_DIR.parent
 
-    # repo root
-    ROOT_DIR = BASE_DIR
-
-    # ===============================
-    # STATIC FOLDERS
-    # ===============================
+    # =========================================
+    # STATIC
+    # =========================================
     STATIC_DIR = ROOT_DIR / "src" / "static"
 
     UPLOAD_DIR = STATIC_DIR / "uploads"
@@ -288,29 +423,29 @@ class Config:
     ]:
         folder.mkdir(parents=True, exist_ok=True)
 
-    # ===============================
+    # =========================================
     # DATABASE
-    # ===============================
+    # =========================================
     MONGO_URI = os.getenv(
         "MONGO_URI",
         "mongodb://127.0.0.1:27017/alzheimer_ai"
     )
 
-    # ===============================
+    # =========================================
     # JWT
-    # ===============================
+    # =========================================
     JWT_SECRET_KEY = os.getenv(
         "JWT_SECRET_KEY",
-        "super-secret-key-change-this-32chars"
+        "change-this-secret-key"
     )
 
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
         hours=int(os.getenv("JWT_EXPIRES_HOURS", "24"))
     )
 
-    # ===============================
+    # =========================================
     # CORS
-    # ===============================
+    # =========================================
     _cors = os.getenv(
         "CORS_ORIGINS",
         "http://localhost:5173,http://127.0.0.1:5173,https://alzheimer-ai-system-frontend-4zcj.vercel.app"
@@ -321,16 +456,16 @@ class Config:
     else:
         CORS_ORIGINS = [x.strip() for x in _cors.split(",")]
 
-    # ===============================
-    # FILE SIZE
-    # ===============================
+    # =========================================
+    # FILE LIMIT
+    # =========================================
     MAX_CONTENT_LENGTH = int(
         os.getenv("MAX_CONTENT_LENGTH_MB", "25")
     ) * 1024 * 1024
 
-    # ===============================
-    # MODEL PATH (FINAL FIX)
-    # ===============================
+    # =========================================
+    # MODEL
+    # =========================================
     MODEL_PATH = os.getenv(
         "MODEL_PATH",
         str((ROOT_DIR / "best_demnet_model (1).keras").resolve())
@@ -348,22 +483,19 @@ class Config:
         "v1.0"
     )
 
-    # ===============================
+    # =========================================
     # GEMINI
-    # ===============================
-    GEMINI_API_KEY = os.getenv(
-        "GEMINI_API_KEY",
-        ""
-    ).strip()
+    # =========================================
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 
     GEMINI_MODEL = os.getenv(
         "GEMINI_MODEL",
         "gemini-1.5-flash"
     )
 
-    # ===============================
+    # =========================================
     # PRODUCTION CHECK
-    # ===============================
+    # =========================================
     if ENV == "production":
         if not os.getenv("MONGO_URI"):
             raise RuntimeError("Missing MONGO_URI")
