@@ -282,29 +282,134 @@
 #     return result
 
 
+# ============================================
+# FILE: src/services/inference_service.py
+# FINAL FULLY FIXED FOR RENDER + .KERAS MODEL
+# ============================================
 
+import os
 import numpy as np
 from PIL import Image
+
 from src.config import Config
+from src.models.scan_model import get_scan_by_id, update_prediction
 
+MODEL = None
+
+CLASS_NAMES = [
+    "ND",   # Non Demented
+    "VMD",  # Very Mild Demented
+    "MID",  # Mild Demented
+    "MOD"   # Moderate Demented
+]
+
+
+# ============================================
+# LOAD MODEL ONLY ONCE
+# ============================================
+def get_model():
+    global MODEL
+
+    if MODEL is None:
+        try:
+            from tensorflow import keras
+
+            model_path = os.path.abspath(Config.MODEL_PATH)
+
+            print("Loading model:", model_path)
+
+            if not os.path.exists(model_path):
+                raise RuntimeError("Model file not found")
+
+            MODEL = keras.models.load_model(
+                model_path,
+                compile=False
+            )
+
+            print("✅ Model loaded successfully")
+
+        except Exception as e:
+            print("❌ Model load failed:", str(e))
+            raise RuntimeError("Unable to load model")
+
+    return MODEL
+
+
+# ============================================
+# PREPROCESS IMAGE
+# MODEL EXPECTS: (128,128,1)
+# ============================================
 def preprocess_image(path):
-    print("Reading image:", path)
+    abs_path = os.path.abspath(path)
 
-    # convert to grayscale (1 channel)
-    img = Image.open(path).convert("L")
+    print("Reading image:", abs_path)
 
-    # resize
+    if not os.path.exists(abs_path):
+        raise RuntimeError("Image file not found")
+
+    # Convert to grayscale
+    img = Image.open(abs_path).convert("L")
+
+    # Resize
     img = img.resize((Config.IMG_SIZE, Config.IMG_SIZE))
 
-    # normalize
+    # Normalize
     arr = np.array(img).astype("float32") / 255.0
 
-    # add channel dimension => (128,128,1)
+    # Add channel dimension => (128,128,1)
     arr = np.expand_dims(arr, axis=-1)
 
-    # batch dimension => (1,128,128,1)
+    # Add batch dimension => (1,128,128,1)
     arr = np.expand_dims(arr, axis=0)
 
     print("Final Input Shape:", arr.shape)
 
     return arr
+
+
+# ============================================
+# MAIN INFERENCE
+# ============================================
+def run_inference_for_scan(user_id, scan_id):
+    try:
+        scan = get_scan_by_id(user_id, scan_id)
+
+        if not scan:
+            raise ValueError("Scan not found")
+
+        file_path = scan.get("imagePath")
+
+        if not file_path:
+            raise ValueError("Image path missing")
+
+        # preprocess
+        x = preprocess_image(file_path)
+
+        # model
+        model = get_model()
+
+        # prediction
+        preds = model.predict(x, verbose=0)[0]
+
+        idx = int(np.argmax(preds))
+
+        confidence = float(preds[idx])
+
+        result = {
+            "stage": CLASS_NAMES[idx],
+            "confidence": round(confidence, 4),
+            "probs": [float(i) for i in preds],
+            "model": Config.MODEL_NAME,
+            "version": Config.MODEL_VERSION
+        }
+
+        # save in mongodb
+        update_prediction(user_id, scan_id, result)
+
+        print("✅ Prediction Success:", result)
+
+        return result
+
+    except Exception as e:
+        print("🔥 Inference Error:", str(e))
+        raise RuntimeError(str(e))
